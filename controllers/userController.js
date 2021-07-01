@@ -1,19 +1,20 @@
 const User = require('../models/User')
 
-exports.login = function () {
+exports.login = async ({ body }, res) => {
+  const result = await new User(body).login()
+
+  try { res.send(result) }
+  catch (err) { console.log(err) }
 }
 
 exports.logout = function () {
 }
 
-exports.register = function (req, res) {
-  let user = new User(req.body)
-  user.register()
-  if (user.errors.length) {
-    res.send(user.errors)
-  } else {
-    res.send('Thanks for trying register')
-  }
+exports.register = async ({ body }, res) => {
+  const result = await new User(body).register()
+
+  try { res.send(result) }
+  catch (err) { console.log(err) }
 }
 
 exports.home = function (req, res) {
