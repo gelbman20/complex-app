@@ -16,8 +16,12 @@ db
     const User = mongoose.model('User', userScheme)
 
     module.exports = class DB {
-      static saveUser({username, email, password}) {
+      static saveUser({ username, email, password }) {
         return new User({username, email, password}).save()
+      }
+
+      static getUser({ username }) {
+        return User.findOne({username}).exec()
       }
     }
 

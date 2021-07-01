@@ -60,17 +60,34 @@ User.prototype.validate = function () {
   }
 }
 
-User.prototype.register = function () {
-  // Step #1: Validate User Date
-  this.cleanUp()
-  this.validate()
+User.prototype.login = function () {
+  return new Promise((resolve, reject) => {
+    this.cleanUp()
+    DB.getUser(this.data)
+      .then((user) => {
+        user && user.password === this.data.password && resolve('Congrats!!!')
+        resolve('Invalid Username or Password')
+      })
+      .catch((err) => reject(err))
+  })
+}
 
-  // Step #2: Only if there are no validation errors
-  // then save the user data into database
-  if (!this.errors.length) {
-    DB.saveUser(this.data)
-      .then((savedUser) => console.log(savedUser))
-  }
+User.prototype.register = function () {
+  return new Promise((resolve, reject) => {
+    // Step #1: Validate User Date
+    this.cleanUp()
+    this.validate()
+
+    // Step #2: Only if there are no validation errors
+    // then save the user data into database
+    if (!this.errors.length) {
+      DB.saveUser(this.data)
+        .then(() => resolve('Thanks for trying register'))
+        .catch((err) => reject(err))
+    } else {
+      resolve(this.errors)
+    }
+  })
 }
 
 module.exports = User
