@@ -1,4 +1,5 @@
 require('dotenv').config()
+const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 
 const mongoUri = process.env.MONGOURL
@@ -17,6 +18,8 @@ db
 
     module.exports = class DB {
       static saveUser({ username, email, password }) {
+        let salt = bcrypt.genSaltSync(10)
+        password = bcrypt.hashSync(password, salt)
         return new User({username, email, password}).save()
       }
 

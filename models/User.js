@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs')
 const validator = require('validator')
 const DB = require('../db')
 
@@ -47,8 +48,8 @@ User.prototype.validate = function () {
     this.errors.push('Password must be at least 12 characters')
   }
 
-  if (this.data.password.length > 100) {
-    this.errors.push('Password cannot exit 100 characters')
+  if (this.data.password.length > 50) {
+    this.errors.push('Password cannot exit 50 characters')
   }
 
   if (this.data.username.length > 0 && this.data.username.length < 3) {
@@ -65,8 +66,11 @@ User.prototype.login = function () {
     this.cleanUp()
     DB.getUser(this.data)
       .then((user) => {
-        user && user.password === this.data.password && resolve('Congrats!!!')
-        resolve('Invalid Username or Password')
+        if (user && bcrypt.compareSync(this.data.password, user.password)) {
+          resolve('Congrats!!!')
+        } else {
+          resolve('Invalid Username or Password')
+        }
       })
       .catch((err) => reject(err))
   })
