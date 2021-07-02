@@ -23,8 +23,8 @@ db
         return new User({username, email, password}).save()
       }
 
-      static getUser({ username }) {
-        return User.findOne({username}).exec()
+      static getUser(user) {
+        return User.findOne(user).exec()
       }
     }
 
