@@ -67,9 +67,9 @@ User.prototype.login = function () {
     DB.getUser(this.data)
       .then((user) => {
         if (user && bcrypt.compareSync(this.data.password, user.password)) {
-          resolve('Congrats!!!')
+          resolve({ user })
         } else {
-          resolve('Invalid Username or Password')
+          resolve({ errors: ['Invalid Username or Password'] })
         }
       })
       .catch((err) => reject(err))

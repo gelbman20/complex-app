@@ -3,14 +3,28 @@ const User = require('../models/User')
 exports.login = async (req, res) => {
   const user = new User(req.body)
   const result = await user.login()
+  console.log(result)
   try {
-    req.session.user = { username: user.data.username }
-    res.send(result)
+    // Success login
+    if (result.user) {
+      req.session.user = { username: user.data.username }
+      res.redirect('/')
+    }
+
+    // Failed login
+    if (result.errors) {
+      req.flash('errors', result.errors.join(', '))
+      req.session.save(() => {
+        res.redirect('/')
+      })
+    }
+
   }
   catch (err) { console.log(err) }
 }
 
-exports.logout = function () {
+exports.logout = (req, res) => {
+  req.session.destroy(() => res.redirect('/'))
 }
 
 exports.register = async ({ body }, res) => {
@@ -21,12 +35,16 @@ exports.register = async ({ body }, res) => {
 }
 
 exports.home = function (req, res) {
-  if (req.session.user) {
-    const { username } = req.session.user
-    res.render('home-dashboard', {
-      username
-    })
-  } else {
-    res.render('home-guest')
+  const { user } = req.session
+
+  // Login User
+  if (user) {
+    const { username } = user
+    res.render('home-dashboard', { username })
+  }
+
+  // Anonymous or Failed login
+  if (!user) {
+    res.render('home-guest', { errors: req.flash('errors') })
   }
 }
