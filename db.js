@@ -17,7 +17,6 @@ db
     const User = mongoose.model('User', userScheme)
 
     module.exports = class DB {
-      static mongoUrl = mongoUrl
       static saveUser({ username, email, password }) {
         let salt = bcrypt.genSaltSync(10)
         password = bcrypt.hashSync(password, salt)
