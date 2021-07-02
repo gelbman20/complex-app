@@ -1,9 +1,13 @@
+require('dotenv').config()
 const express = require('express')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')
+const mongoUrl = process.env.MONGOURL
 const router = require('./router')
 
 const sessionOptions = session({
   secret: 'JavaScript',
+  store: MongoStore.create({ mongoUrl }),
   resave: false,
   saveUninitialized: false,
   cookie: {

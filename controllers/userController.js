@@ -23,7 +23,9 @@ exports.register = async ({ body }, res) => {
 exports.home = function (req, res) {
   if (req.session.user) {
     const { username } = req.session.user
-    res.send(`Welcome ${username}`)
+    res.render('home-dashboard', {
+      username
+    })
   } else {
     res.render('home-guest')
   }

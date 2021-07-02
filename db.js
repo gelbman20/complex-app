@@ -2,8 +2,8 @@ require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 
-const mongoUri = process.env.MONGOURL
-const db = mongoose.connect(mongoUri, {useNewUrlParser: true, useUnifiedTopology: true})
+const mongoUrl = process.env.MONGOURL
+const db = mongoose.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 mongoose.set('useFindAndModify', false)
 
 db
@@ -17,6 +17,7 @@ db
     const User = mongoose.model('User', userScheme)
 
     module.exports = class DB {
+      static mongoUrl = mongoUrl
       static saveUser({ username, email, password }) {
         let salt = bcrypt.genSaltSync(10)
         password = bcrypt.hashSync(password, salt)
